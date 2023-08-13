@@ -1,0 +1,17 @@
+[
+  {
+    "username": "55",
+    "password": "$2a$10$U6ptHW1AVebuFTqanm4XPOpwYBhwI.31tuyrn9NWt/Ch1zXZyciFm",
+    "privilege": false
+  },
+  {
+    "username": "553",
+    "password": "$2a$10$P2u4HFLLYiumG6pF57goAOPZkpHbx9yJ/bm9MoY7uw9fRuAaF4IeS",
+    "privilege": false
+  },
+  {
+    "username": "12333333",
+    "password": "$2a$10$Ry4P6aZH1v8LLJcYgjJF1eCwJK9Kboe0mgpjSnSTJ.EHNBUsxXPJ.",
+    "privilege": false
+  }
+]

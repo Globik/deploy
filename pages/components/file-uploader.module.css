@@ -1,0 +1,139 @@
+/* file-uploader.module.css */
+.body {
+  background: #f7f7f7;
+}
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.fileUploaderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.3s ease-in-out;
+  max-width: 70%;
+  min-width: 70%;
+  background: #fff;
+}
+
+.fileUploaderContainer:hover {
+  border-color: #333;
+}
+
+.fileUploaderImage {
+  width: 100px;
+  height: 100px;
+}
+
+.fileUploaderInput {
+  display: none;
+}
+
+.fileUploaderText {
+  margin-top: 8px;
+  font-size: 16px;
+  color: #555;
+}
+
+.processingInfo {
+  text-align: center;
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  padding: 20px;
+  min-width: 70%;
+  max-width: 70%;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.processingLoading {
+  font-size: 18px;
+  color: #333;
+}
+
+.processingSuccess {
+  font-size: 18px;
+  color: #009900;
+}
+.downloadButton {
+  margin-top: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.downloadButton:hover {
+  background-color: #0056b3;
+}
+
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+@media screen and (max-width: 580px) {
+  .fileUploaderContainer {
+    width: 90%;
+    max-width: 90%;
+   }
+   .processingInfo {
+    text-align: center;
+    margin-top: 20px;
+    border: 2px solid #ccc;
+    padding: 20px;
+    min-width: 90%;
+    width: 90%;
+    max-width: 90%;
+    border-radius: 5px;
+    background: #fff;
+  }
+  }
+  .progressContainer {
+    width: 100%;
+    border-radius: 4px;
+    padding: 4px;
+  }
+  .errorMessage {
+    color: red;
+  }
+  .customProgress {
+    width: 100%;
+    height: 20px;
+    appearance: none;
+    background: linear-gradient(to right, #007bff, #00e600);
+    border: none;
+    border-radius: 4px;
+  }
+  
+  .customProgress::-webkit-progress-value {
+    background: linear-gradient(to right, #007bff, #00e600);
+    border-radius: 4px;
+  }
+  .customProgress::-webkit-progress-bar {
+    background-color: #cccccc;
+    border-radius: 4px;
+  }
+  .customProgress::-moz-progress-bar {
+    background: linear-gradient(to right, #007bff, #00e600);
+    border-radius: 4px;
+  }
+  
+  .customProgress::-ms-fill {
+    background: linear-gradient(to right, #007bff, #00e600);
+    border-radius: 4px;
+  }
+  

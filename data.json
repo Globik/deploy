@@ -1,0 +1,37 @@
+[
+  {
+    "username": "777777",
+    "password": "$2b$10$NIOLsBoxWKwL.1myjvAP6eIrZDvd7qOvYESFkBBwJbgukcfLO1LTy",
+    "accessExpiration": "2023-08-03T02:59:04.181Z",
+    "privilege": true
+  },
+  {
+    "username": "777777777777",
+    "password": "$2b$10$Z1bmNsBJolpd2w2nEJpYkOd0qbrmskOdVdV.1vlUv/IQTDMGx2kZq",
+    "accessExpiration": "2023-09-01T22:00:00.000Z",
+    "privilege": true
+  },
+  {
+    "username": "33",
+    "password": "$2b$10$PCcdSVamJvHwrmh8b3vZqu/3x9oTVhjDpiHBl/1DFok30Wnk/Cnr.",
+    "accessExpiration": "2024-02-01T22:00:00.000Z",
+    "privilege": true
+  },
+  {
+    "username": "123456",
+    "password": "$2b$10$I8yh88lra3yLpkpXk8Goie9fx96VSqVqz.P4ZaYqaT.g61nsuJvai",
+    "accessExpiration": "2023-08-03T22:58:01.530Z",
+    "privilege": true
+  },
+  {
+    "username": "admin",
+    "password": "$2b$10$I8yh88lra3yLpkpXk8Goie9fx96VSqVqz.P4ZaYqaT.g61nsuJvai",
+    "accessExpiration": "2023-09-02T22:00:00.000Z",
+    "privilege": true
+  },
+  {
+    "username": "Local21",
+    "password": "$2b$10$6QEde8vbTHhxwSnQT20TheYm35DJ6O61OHfWHEM/XG5tL9ZdGJLSe",
+    "privilege": true
+  }
+]
