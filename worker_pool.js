@@ -11,6 +11,7 @@ const { EventEmitter } = require('node:events');
 const { Worker } = require('node:worker_threads');
 
 const kTaskInfo = Symbol('kTaskInfo');
+const fucker = Symbol('fucker');
 const kWorkerFreedEvent = Symbol('kWorkerFreedEvent');
 
 class WorkerPoolTaskInfo extends AsyncResource {
@@ -33,6 +34,7 @@ module.exports = class WorkerPool extends EventEmitter {
     this.workers = [];
     this.freeWorkers = [];
     this.tasks = [];
+    this.treadId = null;
 
     for (let i = 0; i < numThreads; i++)
       this.addNewWorker();
@@ -46,11 +48,13 @@ module.exports = class WorkerPool extends EventEmitter {
       }
     });
     
+    this.on(fucker, this.onMsg)
+    
   }
 
   addNewWorker() {
     // const worker = new Worker(new URL('worker.js', import.meta.url));
-    const worker = new Worker('./worker.js');
+    const worker = new Worker('./worker.js',{ workerData:this.threadId });
     worker.on('message', (result) => {
       // In case of success: Call the callback that was passed to `runTask`,
       // remove the `TaskInfo` associated with the Worker, and mark it as free
@@ -61,7 +65,7 @@ module.exports = class WorkerPool extends EventEmitter {
      let ku=JSON.parse(result);
    
    if(ku.type == "progress"){ 
-	 
+	 this.emit(fucker, result);
 	    return;
 	    }
  }
@@ -85,6 +89,7 @@ module.exports = class WorkerPool extends EventEmitter {
       this.workers.splice(this.workers.indexOf(worker), 1);
       this.addNewWorker();
     });
+    this.threadId = worker.threadId;
     this.workers.push(worker);
     this.freeWorkers.push(worker);
     this.emit(kWorkerFreedEvent);
@@ -104,5 +109,49 @@ module.exports = class WorkerPool extends EventEmitter {
 
   close() {
     for (const worker of this.workers) worker.terminate();
+  }
+  getId(){
+	  console.log("getid");
+	  return this.threadId;
+  }
+  onMsg(cb){
+	  this.emit("fuck", cb);
+	 // console.log("du", cb);
+	 // cb();
+  }
+  closeThat(){
+	  for (const worker of this.workers) {
+		  console.log(worker.threadId);
+		  
+		   if (worker[kTaskInfo]){
+				   console.log("aha. ktaskinfo");
+      worker[kTaskInfo].done(null, JSON.stringify({type:"error", message: "worker closed!"}));
+	  worker[kTaskInfo] = null;
+      this.freeWorkers.push(worker);
+      this.emit(kWorkerFreedEvent);
+      break;
+		   }
+		  
+		  
+		  
+		  
+		  
+	  }
+	  let a = this.getId();
+	  console.log("ID: ", a, " lengs ", this.workers.length);
+	  /* for (const worker of this.workers) {
+		   if(worker.threadId == a){
+			   console.log("worker.threaD ", worker.threadId);
+			   if (worker[kTaskInfo]){
+				   console.log("aha. ktaskinfo");
+       worker[kTaskInfo].done(null, JSON.stringify({type:"error", message: "worker closed!"}));
+	  worker[kTaskInfo] = null;
+      this.freeWorkers.push(worker);
+      this.emit(kWorkerFreedEvent);
+      break;
+		   }
+	   }
+	
+  }*/
   }
 }

@@ -1,4 +1,4 @@
-var { parentPort } = require( 'node:worker_threads');
+var { parentPort, workerData } = require( 'node:worker_threads');
 const path = require("path");
 const process = require('node:process');
 const { Readable } = require("stream");
@@ -8,7 +8,7 @@ const util = require("util");
 var fs = require('fs');
 const readiFile = util.promisify(fs.readFile);
 
-XLSX.stream.set_readable(Readable);
+//XLSX.stream.set_readable(Readable);
 const DATA_DIR = path.join(__dirname, "backend/data.json");
 
 
@@ -41,9 +41,11 @@ const jsonData = JSON.parse(jsonData1);
       const progress = Math.round(
         ((i - cellRange.s.r) / (cellRange.e.r - cellRange.s.r)) * 100
       );
-      const message = JSON.stringify({ type:"progress", progress: progress }); // Создаем JSON-сообщение
-  
-     parentPort.postMessage(message);
+     // console.log("***PROGI ***", progress);
+     // const message = JSON.stringify({ type:"progress", progress: progress }); // Создаем JSON-сообщение
+  const message = { type:"progress", progress: progress, kTask: workerData, NID:task.NID };
+  let m = JSON.stringify(message);
+     parentPort.postMessage(m);
  
       const number_in_sver = cellValue ? cellValue.slice(1) : "";
       for (const j of jsonData) {
@@ -63,6 +65,7 @@ const jsonData = JSON.parse(jsonData1);
           }
         } catch (err) {
           console.error(err);
+          parentPort.postMessage(JSON.stringify({type: "error", message: err}));
         }
       }
     }
@@ -74,12 +77,8 @@ const jsonData = JSON.parse(jsonData1);
     while (true) {
       try {
         XLSX.writeFileAsync(
-          
-          path.join(__dirname, "uploads", task.path),
           wb,
-          (d)=>{
-			//console.log("D: ", d);  
-		  }
+          path.join(__dirname, "uploads", task.path),
         );
         break;
       } catch (err) {
