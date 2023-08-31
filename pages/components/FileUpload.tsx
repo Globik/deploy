@@ -10,7 +10,8 @@ const FileUploader: React.FC = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    const newSocket = new WebSocket("ws://185.229.66.172:7000");
+  //alert(location.hostname);
+    const newSocket = new WebSocket("ws://" + location.hostname + ":7000");
 
     newSocket.onopen = () => {
       console.log("WebSocket connection opened");
@@ -63,7 +64,8 @@ const FileUploader: React.FC = () => {
     try {
       setProcessing(true);
       setUploadProgress(0);
-      const url = "http://185.229.66.172:7000/parser";
+     // alert(location.hostname);
+      const url = "http://" + location.hostname + ":7000/parser";
       let formData = new FormData();
       formData.append("upload_file", file);
 
