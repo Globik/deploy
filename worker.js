@@ -41,9 +41,8 @@ const jsonData = JSON.parse(jsonData1);
       const progress = Math.round(
         ((i - cellRange.s.r) / (cellRange.e.r - cellRange.s.r)) * 100
       );
-     // console.log("***PROGI ***", progress);
-     // const message = JSON.stringify({ type:"progress", progress: progress }); // Создаем JSON-сообщение
-  const message = { type:"progress", progress: progress, kTask: workerData, NID:task.NID };
+     
+  const message = { type:"progress", progress: progress, NID:task.NID };
   let m = JSON.stringify(message);
      parentPort.postMessage(m);
  

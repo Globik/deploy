@@ -1,11 +1,7 @@
 // This example from https://nodejs.org/dist/latest/docs/api/worker_threads.html
 // Documentation code redistributed under the MIT license.
 // Copyright Node.js contributors
-/*
-import { AsyncResource } from 'node:async_hooks';
-import { EventEmitter } from 'node:events';
-import { Worker } from 'node:worker_threads';
-*/
+
 const { AsyncResource } = require('node:async_hooks');
 const { EventEmitter } = require('node:events');
 const { Worker } = require('node:worker_threads');
@@ -54,7 +50,7 @@ module.exports = class WorkerPool extends EventEmitter {
 
   addNewWorker() {
     // const worker = new Worker(new URL('worker.js', import.meta.url));
-    const worker = new Worker('./worker.js',{ workerData:this.threadId });
+    const worker = new Worker('./worker.js',{ });
     worker.on('message', (result) => {
       // In case of success: Call the callback that was passed to `runTask`,
       // remove the `TaskInfo` associated with the Worker, and mark it as free
@@ -116,8 +112,7 @@ module.exports = class WorkerPool extends EventEmitter {
   }
   onMsg(cb){
 	  this.emit("fuck", cb);
-	 // console.log("du", cb);
-	 // cb();
+	 
   }
   closeThat(){
 	  for (const worker of this.workers) {
@@ -126,32 +121,15 @@ module.exports = class WorkerPool extends EventEmitter {
 		   if (worker[kTaskInfo]){
 				   console.log("aha. ktaskinfo");
       worker[kTaskInfo].done(null, JSON.stringify({type:"error", message: "worker closed!"}));
+      
 	  worker[kTaskInfo] = null;
       this.freeWorkers.push(worker);
       this.emit(kWorkerFreedEvent);
       break;
-		   }
-		  
-		  
-		  
-		  
-		  
+		   } 
 	  }
 	  let a = this.getId();
 	  console.log("ID: ", a, " lengs ", this.workers.length);
-	  /* for (const worker of this.workers) {
-		   if(worker.threadId == a){
-			   console.log("worker.threaD ", worker.threadId);
-			   if (worker[kTaskInfo]){
-				   console.log("aha. ktaskinfo");
-       worker[kTaskInfo].done(null, JSON.stringify({type:"error", message: "worker closed!"}));
-	  worker[kTaskInfo] = null;
-      this.freeWorkers.push(worker);
-      this.emit(kWorkerFreedEvent);
-      break;
-		   }
-	   }
-	
-  }*/
+
   }
 }

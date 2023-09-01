@@ -5,8 +5,8 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import styles from "./file-uploader.module.css";
-var NID :string="-1";
-var curr:number=0;
+var NID :string = "0";
+
 const FileUploader: React.FC = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
@@ -21,17 +21,9 @@ const FileUploader: React.FC = () => {
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if(data.type=="progress"){
-      if(data.NID == NID){
-      var progress = data.progress; // Получаем прогресс из сообщения
-     
       
-    //  console.log("progress: ", data.progress)
-     // console.warn("NID ", data.NID, " ", NID);
-    //  if(progress > curr){
+      var progress = data.progress; // Получаем прогресс из сообщения
       setUploadProgress(progress);
-     // } 
-      curr = progress;
-      }
       }else if(data.type=="NID"){
 		  NID=data.NID;
 		  console.log("initial NID: ", NID);
@@ -82,8 +74,9 @@ const FileUploader: React.FC = () => {
      // alert(location.hostname);
       const url = "http://" + location.hostname + ":7000/parser";
       let formData = new FormData();
+      
       formData.append("upload_file", file);
-      formData.append("NID", NID.toString());
+      formData.append("NID", NID);
 
       const response = await axios.post(url, formData, {
         headers: {
