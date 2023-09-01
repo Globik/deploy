@@ -75,8 +75,8 @@ const jsonData = JSON.parse(jsonData1);
     let i = 0;
     while (true) {
       try {
-        XLSX.writeFileAsync(
-          wb,
+        XLSX.writeFile(
+       wb,
           path.join(__dirname, "uploads", task.path),
         );
         break;
