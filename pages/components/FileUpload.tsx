@@ -42,13 +42,53 @@ const FileUploader: React.FC = () => {
   }, []);
 
   const [statusText, setStatusText] = useState("");
-  const [fileInputValue, setFileInputValue] = useState("");
+  const [fileInputValue, setFileInputValue] = useState("");        
+  /*      </div>
+      )}
+
+{statusText && !processing && (
+  <d
+        </div>
+      )}
+
+{statusText && !processing && (
+  <d
+        </div>
+      )}
+
+{statusText && !processing && (
+  <d */
   const [processing, setProcessing] = useState(false);
   const [downloadLink, setDownloadLink] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [hasError, setHasError] = useState(false);
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const worker = new Worker('worker.js');
+  
+   worker.addEventListener('message', function(ev){
+   ev.stopPropagation();
+   ev.preventDefault();
+	   //console.log(ev.data);
+	   let d=ev.data;
+	   if(d.type=="progress"){
+	   setProcessing(true);
+		   setUploadProgress(d.progress);
+	   }else if(d.type == "export"){
+		    setStatusText("Файл успешно обработан!");
+
+        const blob = new Blob([d.v], {
+          type: "application/octet-stream",
+        });
+        const fileName = `output_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+        const url = URL.createObjectURL(blob);
+        setDownloadLink(url);
+         setProcessing(false);
+         worker.terminate();
+	   }
+   })
+  
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -57,6 +97,8 @@ const FileUploader: React.FC = () => {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ) {
       setStatusText("Загружен!");
+      worker.postMessage({file:file});
+      return;
       sendFileToServer(file);
     } else {
       console.error("Error: Invalid file type. Please select a .xlsx file.");
@@ -96,7 +138,14 @@ const FileUploader: React.FC = () => {
         const url = URL.createObjectURL(blob);
         setDownloadLink(url);
       } else {
-        throw new Error("Invalid Content-Type in response headers");
+    //  alert(response.status+response.headers["content-type"]+response.data);
+   // alert(response.data);
+   // alert(JSON.parse(response.data).message);
+     // 200application/json; charset=utf-8[object Blob]
+       // throw new Error("Invalid Content-Type in response headers");
+       if(response.status == 200){
+		   setStatusText("Все ресурсы заняты. Пожалуйста, повторите попытку позднее!");
+	   }
       }
     } catch (error) {
       console.error("Error uploading file to server:", error);

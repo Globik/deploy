@@ -40,6 +40,7 @@ module.exports = class WorkerPool extends EventEmitter {
     this.on(kWorkerFreedEvent, () => {
       if (this.tasks.length > 0) {
         const { task, callback } = this.tasks.shift();
+        console.log('free event');
         this.runTask(task, callback);
       }
     });
@@ -51,6 +52,7 @@ module.exports = class WorkerPool extends EventEmitter {
   addNewWorker() {
     // const worker = new Worker(new URL('worker.js', import.meta.url));
     const worker = new Worker('./worker.js',{ });
+    worker.ref();
     worker.on('message', (result) => {
       // In case of success: Call the callback that was passed to `runTask`,
       // remove the `TaskInfo` associated with the Worker, and mark it as free
@@ -61,15 +63,26 @@ module.exports = class WorkerPool extends EventEmitter {
      let ku=JSON.parse(result);
    
    if(ku.type == "progress"){ 
-	 this.emit(fucker, result);
+	
 	    return;
-	    }
+	    }else if(ku.type == "anfang"){
+			
+			return;
+		}
  }
   
       worker[kTaskInfo] = null;
       this.freeWorkers.push(worker);
       this.emit(kWorkerFreedEvent);
     });
+    
+    
+    worker.on('online', (d)=>{
+		console.log("worker=", worker.threadId, " is online! ", d);
+		//this.emit(fucker, { threadId: worker.threadId });
+	});
+    
+    
     worker.on('error', (err) => {
       // In case of an uncaught exception: Call the callback that was passed to
       // `runTask` with the error.
@@ -94,42 +107,71 @@ module.exports = class WorkerPool extends EventEmitter {
   runTask(task, callback) {
     if (this.freeWorkers.length === 0) {
       // No free threads, wait until a worker thread becomes free.
-      this.tasks.push({ task, callback });
+      callback(null, JSON.stringify({ type: "busy", message: "Все ресурсы заняты. Пожалуйста, повторите попытку позднее!"}));
+    //  this.tasks.push({ task, callback });
       return;
     }
 
     const worker = this.freeWorkers.pop();
     worker[kTaskInfo] = new WorkerPoolTaskInfo(callback);
+    console.log("IN worker pool threadid ", worker.threadId);
+    task.threadId = worker.threadId;
+    console.log("task:", task);
+   // worker.ref();
     worker.postMessage(task);
+    // worker.postMessage(task);
   }
 
   close() {
     for (const worker of this.workers) worker.terminate();
   }
   getId(){
-	  console.log("getid");
+	  
 	  return this.threadId;
   }
   onMsg(cb){
-	  this.emit("fuck", cb);
+	 this.emit("fuck", cb);
 	 
   }
-  closeThat(){
+  closeThat(path, threadId){
 	  for (const worker of this.workers) {
-		  console.log(worker.threadId);
-		  
+		  console.log("mama: ", worker.threadId," ", threadId);
+		  if(worker.threadId == threadId){
 		   if (worker[kTaskInfo]){
-				   console.log("aha. ktaskinfo");
-      worker[kTaskInfo].done(null, JSON.stringify({type:"error", message: "worker closed!"}));
+				   console.log("aha match!");
+				   worker.postMessage({type:"fertig"});
+      worker[kTaskInfo].done(null, JSON.stringify({type:"error", message: "worker closed!", filename: path }));
       
 	  worker[kTaskInfo] = null;
+	 // worker.unref();
       this.freeWorkers.push(worker);
+     // worker.terminate();
       this.emit(kWorkerFreedEvent);
+      worker.terminate();
       break;
 		   } 
+	   }
 	  }
+	  
 	  let a = this.getId();
 	  console.log("ID: ", a, " lengs ", this.workers.length);
 
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

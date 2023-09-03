@@ -26,7 +26,7 @@
   {
     "username": "admin",
     "password": "$2b$10$I8yh88lra3yLpkpXk8Goie9fx96VSqVqz.P4ZaYqaT.g61nsuJvai",
-    "accessExpiration": "2023-09-02T22:00:00.000Z",
+    "accessExpiration": "2023-09-01T21:47:50.334Z",
     "privilege": true
   },
   {
@@ -37,6 +37,7 @@
   {
     "username": "suka",
     "password": "$2b$10$8IwmY/K2.6l1JTux6Fdm2u1sfDjHskOv27IaOyAakE3q6ahhmziy.",
-    "privilege": false
+    "privilege": true,
+    "accessExpiration": "2023-09-01T21:54:39.580Z"
   }
 ]

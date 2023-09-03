@@ -19,13 +19,14 @@ const WebSocket = require("ws");
 const os = require("os");
 const process = require('process');
 
-const WorkerPool = require('./worker_pool.js');
-
+//const WorkerPool = require('./worker_pool.js');
+/*
 const pool = new WorkerPool(os.cpus().length);
 process.on("beforeExit", ()=>{
 	pool.close();
 })
-
+*/
+const { Worker } = require('node:worker_threads');
 const server = http.createServer(app); // Создаем HTTP сервер
 const wss = new WebSocket.Server({ server: server, clientTracking: true });
 
@@ -61,38 +62,93 @@ app.post("/parser", upload.single("upload_file"), async (req, res) => {
     let SOME_ID = req.body.NID;
 console.log("req.body.NID: ",  SOME_ID);
 
-const onfoo=function(d){
-		 let t=JSON.parse(d);
-		if(t.NID == SOME_ID){
-		send_to_one(SOME_ID, t);
-	}
-	 }
+
 	 
     const start_time = Date.now();
     console.log("Начало");
     
-   
+   /*
     pool.runTask({ path:  uploadFile.filename, NID: SOME_ID }, (err, result)=>{
 		if(err){
 			console.log("err:", err);
 			fs.unlink(path.join(__dirname, "uploads", uploadFile.filename), (e,d)=>{console.log(e,d)});
+			up_target({ nid: SOME_ID });
     res.status(500).send("An error occurred while processing the request.");
 		}
 	
 		var resi = JSON.parse(result);
 		
 		if(resi.type == "progress"){
-		//	let m=JSON.stringify({progress:resi.progress});
-		//progressEmitter.emit("progress", m); 
+		if(resi.NID == SOME_ID){
+		send_to_one(SOME_ID, resi);
+	}
+		return;
+	}else if(resi.type == "busy"){
+		console.log(resi.message);
+		fs.unlink(path.join(__dirname, "uploads", uploadFile.filename), (e,d)=>{
+			console.log(e,d);
+			res.status(200).send({ message: resi.message });
+			});
+			
+			return;
+	}else if(resi.type == "anfang"){
+		console.log(resi);
+		if(resi.NID == SOME_ID){
+		down_target({ nid: SOME_ID, file: uploadFile.filename, threadId: resi.threadId });
+	
+	}
 		return;
 	}else if(resi.type == "error"){
-		console.log(resi.message);
+		console.log(resi.message, resi.filename, uploadFile.filename);
 		 fs.unlink(path.join(__dirname, "uploads", uploadFile.filename), (e,d)=>{console.log(e,d)});
-		 pool.off("fuck", onfoo);
-		 return;
-		//res.status(500).send(resi.message);
+		 
+		 up_target({ nid: SOME_ID });
+		// return;
+		res.status(200).send("resi.message");
 	}else{
+	up_target({ nid: SOME_ID });
 	
+	*/
+	
+	
+	const worker = new Worker('./worker.js',{ });
+	worker.ref();
+	console.log("THREADID:", worker.threadId);
+	
+	worker.on('message', (result) => {
+		let a=JSON.parse(result);
+		if(a.type=="anfang"){
+		console.log(result);
+		worker.terminate();
+	}else if(a.type=="progress"){
+		if(a.NID == SOME_ID){
+		send_to_one(SOME_ID, a);
+	}
+	}
+	})
+	
+	 worker.on('online', ()=>{
+		console.log("worker=", worker.threadId, " is online! ");
+	})
+	
+	worker.on('error', (err) => {
+		console.log(err);
+	
+})
+const onbreak = function(d){
+	console.log("***BREAK***");
+	worker.terminate();
+	worker.unref();
+}
+progressEmitter.on("break", onbreak);
+
+worker.on('exit', (d)=>{
+	console.log("worker exited ", d);
+	progressEmitter.off("break", onbreak);
+})
+
+worker.postMessage({path:uploadFile.filename, threadId: worker.threadId, NID: SOME_ID })
+return;
 		 const end_time = Date.now();
 
     const time_diff = end_time - start_time;
@@ -112,26 +168,27 @@ const onfoo=function(d){
     res.status(200).download(uploadFile.path, fileName, (err) => {
       if (err) {
         console.error("some err 1:", err);
-        pool.off("fuck", onfoo);
-        fs.unlink(path.join(__dirname, "uploads", filename), (e,d)=>{console.log(e,d)});
+       
+        fs.unlink(path.join(__dirname, "uploads", uploadFile.filename), (e,d)=>{console.log(e,d)});
         res.status(500).send("An error occurred while downloading the file.");
       }
-      fs.unlink(path.join(__dirname, "uploads", filename), (e, d)=>{console.log(e, d)});
-      pool.off("fuck", onfoo);
+     // console.log(uploadFile.fileName);
+      fs.unlink(path.join(__dirname, "uploads", uploadFile.filename), (e, d)=>{console.log(e, d)});
+     
     });
 		
 		
 		
-	}	
+	//}	
 		
-	});
-     pool.on("fuck", onfoo);
+//	});
+   
 	 
 	 
   } catch (err) {
     console.error('SOME ERR:', err);
   
-     fs.unlink(path.join(__dirname, "uploads", uploadFile.filename), (e,d)=>{console.log(e,d)});
+    fs.unlink(path.join(__dirname, "uploads", uploadFile.filename), (e,d)=>{console.log(e,d)});
     res.status(500).send("An error occurred while processing the request.");
   }
 });
@@ -140,13 +197,16 @@ const onfoo=function(d){
 
 wss.on("connection", (ws, req) => {
 	ws.nid = shortid.generate();
+	ws.down = false;
+	ws.threadId = -1;
 	console.log("websocket connected! ", ws.nid, wss.clients.size);
 wsend(ws, {type:"NID", NID: ws.nid});
 
   ws.on("close", () => {
 	  console.log("socket closed");
-
-	  pool.closeThat();
+    //  if(ws.down)
+     //  pool.closeThat(ws.file, ws.threadId);
+     progressEmitter.emit("break", {id:1});
   });
    ws.on('error', function eri(err){
 	  console.log("socket error: ", err);
@@ -179,7 +239,25 @@ function send_to_one(target, obj) {
  
 }
 
+function down_target(target){
+	 for (let el of wss.clients) {
+    if (el.nid == target.nid) {
+		el.down = true;
+		el.file = target.file;
+		el.threadId = target.threadId;
+		return;
+	}}
+}
 
+function up_target(target){
+	 for (let el of wss.clients) {
+    if (el.nid == target.nid) {
+		el.down = false;
+		el.threadId = -1;
+		el.file = null;
+		return;
+	}}
+}
 
 
 

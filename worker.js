@@ -13,11 +13,16 @@ const DATA_DIR = path.join(__dirname, "backend/data.json");
 
 
 parentPort.on('message', async (task)=>{
-	
+	//console.log("starting");
+	if(task.type == "fertig"){
+		console.log("ONFERTIG**");
+		 parentPort.postMessage( JSON.stringify({type:"error", message: "worker closed! 22222222222", filename: task.path }));
+		return;
+	}
 	try{
-
-	
-	
+  // console.log("*** STARTING ***");
+	 parentPort.postMessage(JSON.stringify({type: "anfang", message: "starting", NID:task.NID, filename: task.path, threadId: task.threadId }));
+	return;
 	 const dict_all_list = [];
 
     // Load data from JSON file
@@ -29,6 +34,9 @@ const jsonData = JSON.parse(jsonData1);
     );
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
+
+
+
 
     const cellRange = XLSX.utils.decode_range(worksheet["!ref"]);
     const firstColumnIndex = cellRange.s.c;
@@ -42,7 +50,7 @@ const jsonData = JSON.parse(jsonData1);
         ((i - cellRange.s.r) / (cellRange.e.r - cellRange.s.r)) * 100
       );
      
-  const message = { type:"progress", progress: progress, NID:task.NID };
+  const message = { type: "progress", progress: progress, NID:task.NID, threadId: task.threadId };
   let m = JSON.stringify(message);
      parentPort.postMessage(m);
  
@@ -64,7 +72,7 @@ const jsonData = JSON.parse(jsonData1);
           }
         } catch (err) {
           console.error(err);
-          parentPort.postMessage(JSON.stringify({type: "error", message: err}));
+          parentPort.postMessage(JSON.stringify({type: "error", message: err, filename: task.path, threadId: task.threadId }));
         }
       }
     }
@@ -72,6 +80,11 @@ const jsonData = JSON.parse(jsonData1);
     const ws = XLSX.utils.json_to_sheet(dict_all_list);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    
+    
+    
+    
+    
     let i = 0;
     while (true) {
       try {
@@ -86,7 +99,7 @@ const jsonData = JSON.parse(jsonData1);
     }
 
 	
-	parentPort.postMessage(JSON.stringify({ type: "done" }));
+	parentPort.postMessage(JSON.stringify({ type: "done", threadId: task.threadId }));
 	
 	
 	
@@ -94,7 +107,7 @@ const jsonData = JSON.parse(jsonData1);
 	
 }catch(er){
 	console.log("erri in parentPort:", er);
-	parentPort.postMessage(JSON.stringify({type: "error", message: er}));
+	parentPort.postMessage(JSON.stringify({type: "error", message: er, filename: task.path, threadId: task.threadId }));
 }
 
 })
