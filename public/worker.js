@@ -1,7 +1,8 @@
 //importScripts('dist_xlsx.full.min.js');
 if( 'function' === typeof importScripts) {
-self.addEventListener('message', async function(ev){
 	importScripts('dist_xlsx.full.min.js');
+self.addEventListener('message', async function(ev){
+	
 	var data=ev.data;
 	//console.log(data);
 //	var wb=XLSX.utils.table_to_book("fuck");

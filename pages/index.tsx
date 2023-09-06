@@ -11,7 +11,7 @@ const HomePage: React.FC = () => {
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;800&display=swap"
           rel="stylesheet"
         />
-        <script src="/worker.js"></script>
+       
       </Head>
       <header className="navbar">
         <div className="navbar-inner">
