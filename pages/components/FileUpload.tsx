@@ -43,21 +43,7 @@ const FileUploader: React.FC = () => {
 
   const [statusText, setStatusText] = useState("");
   const [fileInputValue, setFileInputValue] = useState("");        
-  /*      </div>
-      )}
 
-{statusText && !processing && (
-  <d
-        </div>
-      )}
-
-{statusText && !processing && (
-  <d
-        </div>
-      )}
-
-{statusText && !processing && (
-  <d */
   const [processing, setProcessing] = useState(false);
   const [downloadLink, setDownloadLink] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -99,7 +85,7 @@ const FileUploader: React.FC = () => {
       setStatusText("Загружен!");
       worker.postMessage({file:file});
       return;
-      sendFileToServer(file);
+    //  sendFileToServer(file);
     } else {
       console.error("Error: Invalid file type. Please select a .xlsx file.");
     }

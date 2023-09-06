@@ -82,16 +82,33 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users }) => {
         accessExpiration = expirationDate.toISOString();
       }
 
-      await axios.post("/api/changePrivilege", {
+     let a = await axios.post("/api/changePrivilege", {
         username,
         privilege,
         accessType: privilege ? selectedAccessType : "reset",
       });
-
-      const updatedUsersWithTimers = usersWithTimers.map((user) =>
-        user.username === username
-          ? { ...user, privilege, accessExpiration }
-          : user
+console.log(a);
+if(a.status === 200){
+alert(a.data.message);
+if(a.data.accessExpiration){
+//alert(1)
+/*
+	calculateRemainingTime(
+                a.data.accessExpiration,
+                privilege ? selectedAccessType : "reset",
+                privilege
+              )
+              */
+}
+}
+      const updatedUsersWithTimers = usersWithTimers.map((user) =>{
+        if(user.username === username){
+     //   console.warn(accessExpiration);
+          return { ...user, privilege, accessExpiration }
+          }else{
+          return user;
+          }
+          }
       );
 
       // Update usersWithTimers
@@ -120,6 +137,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users }) => {
     accessType: string,
     privilege: boolean
   ) {
+  console.warn(expiration);
     if (expiration === "null") {
       return "∞";
     }

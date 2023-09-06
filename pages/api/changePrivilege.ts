@@ -13,27 +13,39 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { username, privilege, accessType } = req.body;
 
   try {
+	 // var accessExpiration: string='nulli';
     const rawData = fs.readFileSync(dataFilePath, 'utf8');
+   // console.log(rawData);
     const users = JSON.parse(rawData);
 
     if (accessType === 'reset') {
       // Сброс времени и снятие привилегии
-      const updatedUsers = users.map((user: any) =>
-        user.username === username ? { ...user, privilege: false, accessExpiration: null } : user
+      const updatedUsers = users.map((user: any) =>{
+       if( user.username === username){ 
+		   return { ...user, privilege: false, accessExpiration: null } 
+		   }else{ 
+			   return user; 
+			   }
+	}
       );
       fs.writeFileSync(dataFilePath, JSON.stringify(updatedUsers, null, 2));
     } else {
       // Изменение привилегий пользователя
-      const updatedUsers = users.map((user: any) =>
-        user.username === username ? { ...user, privilege, accessExpiration: calculateAccessExpiration(accessType) } : user
-      );
+      const updatedUsers = users.map((user: any) =>{
+        if(user.username === username){ 
+			//accessExpiration = calculateAccessExpiration(accessType); 
+			return { ...user, privilege, accessExpiration:calculateAccessExpiration(accessType) }; 
+			}else{
+			return user;
+		}
+      });
       fs.writeFileSync(dataFilePath, JSON.stringify(updatedUsers, null, 2));
     }
 
-    res.status(200).end();
+    res.status(200).send({"message":"OK, сохранили!" });
   } catch (error) {
     console.error(error);
-    res.status(500).end();
+    res.status(200).send({"message": error});
   }
 }
 
