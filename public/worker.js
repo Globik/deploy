@@ -1,6 +1,7 @@
-importScripts('dist_xlsx.full.min.js');
-
+//importScripts('dist_xlsx.full.min.js');
+if( 'function' === typeof importScripts) {
 self.addEventListener('message', async function(ev){
+	importScripts('dist_xlsx.full.min.js');
 	var data=ev.data;
 	//console.log(data);
 //	var wb=XLSX.utils.table_to_book("fuck");
@@ -89,3 +90,4 @@ const workbook = XLSX.read(ab, { dense: true});
 
 	self.postMessage({hello: "world"});
 }, false)
+}

@@ -1,6 +1,7 @@
 // write this code to display percentages file progress dialog
 
 import React, { ChangeEvent, useState, useRef, useEffect } from "react";
+import Script from 'next/script'
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -82,7 +83,7 @@ const FileUploader: React.FC = () => {
       file.type ===
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ) {
-      setStatusText("Загружен!");
+     // setStatusText("Загружен!");
       worker.postMessage({file:file});
       return;
     //  sendFileToServer(file);
@@ -161,7 +162,9 @@ const FileUploader: React.FC = () => {
   };
 
   return (
+  
     <main className={styles.mainContainer}>
+    <Script src="worker.js" />
       <h1>Загрузка базы номеров.</h1>
       <div
         className={styles.fileUploaderContainer}
