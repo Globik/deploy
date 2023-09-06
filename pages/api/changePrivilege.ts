@@ -2,19 +2,24 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import path from 'path';
+import {promisify} from 'util';
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 
 const dataFilePath = path.join(process.cwd(), 'data.json');
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+//const dataFilePath='/home/globi/deploy/data.json';
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).end();
   }
 
   const { username, privilege, accessType } = req.body;
-
+//console.log("process.cwd() ", process.cwd());
+//console.log("__dirname ", __dirname);
   try {
 	 // var accessExpiration: string='nulli';
-    const rawData = fs.readFileSync(dataFilePath, 'utf8');
+    const rawData = await readFile(dataFilePath, 'utf8');
    // console.log(rawData);
     const users = JSON.parse(rawData);
 
@@ -28,7 +33,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 			   }
 	}
       );
-      fs.writeFileSync(dataFilePath, JSON.stringify(updatedUsers, null, 2));
+      await writeFile(dataFilePath, JSON.stringify(updatedUsers, null, 2));
     } else {
       // Изменение привилегий пользователя
       const updatedUsers = users.map((user: any) =>{
@@ -39,7 +44,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 			return user;
 		}
       });
-      fs.writeFileSync(dataFilePath, JSON.stringify(updatedUsers, null, 2));
+      await writeFile(dataFilePath, JSON.stringify(updatedUsers, null, 2));
     }
 
     res.status(200).send({"message":"OK, сохранили!" });

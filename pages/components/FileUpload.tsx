@@ -13,7 +13,7 @@ const FileUploader: React.FC = () => {
 
   useEffect(() => {
   //alert(location.hostname);
-    const newSocket = new WebSocket("ws://" + location.hostname + ":7000");
+   /* const newSocket = new WebSocket("ws://" + location.hostname + ":7000");
 
     newSocket.onopen = () => {
       console.log("WebSocket connection opened");
@@ -35,11 +35,12 @@ const FileUploader: React.FC = () => {
       console.log("WebSocket connection closed");
     };
 
-    setSocket(newSocket);
+    //setSocket(newSocket);
 
     return () => {
       newSocket.close();
     };
+    */
   }, []);
 
   const [statusText, setStatusText] = useState("");

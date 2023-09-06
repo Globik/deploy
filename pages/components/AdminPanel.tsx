@@ -15,6 +15,7 @@ interface AdminPanelProps {
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ users }) => {
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -25,6 +26,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+  //  console.log("*** USERS ***", users)
       try {
         const [authResponse, adminResponse] = await Promise.all([
           axios.get("/api/checkAuth"),
@@ -35,6 +37,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users }) => {
         setIsAdmin(adminResponse.data.isAdmin);
 
         // Update users with timers
+       //  console.log("*** USERS ***", JSON.parse(users))
+     //  var users2:any=JSON.parse(users:any);
         const updatedUsersWithTimers = users.map((user) => {
           const updatedUser = { ...user };
 
@@ -127,6 +131,7 @@ if(a.data.accessExpiration){
           setUsersWithTimers(updatedUsers);
         }
       }
+      window.location.reload();
     } catch (error) {
       console.error("Error changing access:", error);
     }
@@ -137,7 +142,7 @@ if(a.data.accessExpiration){
     accessType: string,
     privilege: boolean
   ) {
-  console.warn(expiration);
+ // console.warn(expiration);
     if (expiration === "null") {
       return "∞";
     }
