@@ -37,7 +37,7 @@ var suka = (process.env.NODE_ENV=='production'?'сортировка-номер�
 try{
 //console.log(window.location.protocol)
   const res = await fetch("https://"+suka+"/api/getUsers");
-  console.log(res);
+  //console.log(res);
   if(res.status==200){
 	  const us = await res.json();
 	 // console.log("***US*** ", us);
