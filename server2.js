@@ -3,9 +3,16 @@ const fs=require('fs');
 const next=require('next');
 console.log("NODE_ENV ", process.env.NODE_ENV);
 var dev=process.env.NODE_ENV !== 'production';
-const dkey = "/etc/letsencrypt/live/сортировка-номеров.рф/privkey.pem";
-const dcert = "/etc/letsencrypt/live/сортировка-номеров.рф/fullchain.pem";
-dev=false;
+if(process.env.DEVELOPMENT=="yes"){
+	var dkey="localhost.key";
+var dcert="localhost.crt"	
+}else{
+	var dcert="/etc/letsencrypt/live/xn----7sbfcoopsiebfcrbjdu.xn--p1ai/fullchain.pem";
+   var dkey="/etc/letsencrypt/live/xn----7sbfcoopsiebfcrbjdu.xn--p1ai/privkey.pem";
+//var dkey = "/etc/letsencrypt/live/сортировка-номеров.рф/privkey.pem";
+//var dcert = "/etc/letsencrypt/live/сортировка-номеров.рф/fullchain.pem";
+}
+dev=true;
 console.log(process.env.NODE_ENV);
 const port=3003;
 const app=next({dev});
