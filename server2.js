@@ -12,7 +12,7 @@ var dcert="localhost.crt"
 //var dkey = "/etc/letsencrypt/live/сортировка-номеров.рф/privkey.pem";
 //var dcert = "/etc/letsencrypt/live/сортировка-номеров.рф/fullchain.pem";
 }
-dev=true;
+dev=false;
 console.log(process.env.NODE_ENV);
 const port=3003;
 const app=next({dev});
