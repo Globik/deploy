@@ -14,7 +14,7 @@ var dcert="localhost.crt"
 }
 dev=false;
 console.log(process.env.NODE_ENV);
-const port=3003;
+const port=443;
 const app=next({dev});
 const handle=app.getRequestHandler();
 const {parse}=require('url');
