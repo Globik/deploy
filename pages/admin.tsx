@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import AdminPanel from "../pages/components/AdminPanel";
-
+import axios from "axios";
 //import users from "../data.json"; // Загрузите данные из вашего data.json
 
 
@@ -33,11 +33,12 @@ const {users}=props;
 
 export async function getServerSideProps() {
 console.log('***FUCKER ***', process.env.NODE_ENV);
-var suka = (process.env.NODE_ENV=='production'?'http://сортировка-номеров.рф':'http://localhost:3000');
+var suka = (process.env.NODE_ENV=='production'?'сортировка-номеров.рф':'localhost:3003');
 try{
-  const res = await fetch(suka+"/api/getUsers");
-  //alert(res)
-  if(res.ok){
+//console.log(window.location.protocol)
+  const res = await fetch("https://"+suka+"/api/getUsers");
+  console.log(res);
+  if(res.status==200){
 	  const us = await res.json();
 	 // console.log("***US*** ", us);
 	  const users=us.users;
@@ -48,7 +49,7 @@ try{
 		  }
 	  };
   }
-  }catch(e){
+  }catch(e:any){
 	  console.log("hier ist ein error ", e)
 	  return {
 		  props:{
