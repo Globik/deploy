@@ -36,7 +36,7 @@ console.log('***FUCKER ***', process.env.NODE_ENV);
 var suka = (process.env.NODE_ENV=='production'?'сортировка-номеров.рф':'localhost:3003');
 try{
 //console.log(window.location.protocol)
-  const res = await fetch("https://"+suka+"/api/getUsers");
+  const res = await fetch("http://"+suka+"/api/getUsers");
   //console.log(res);
   if(res.status==200){
 	  const us = await res.json();
