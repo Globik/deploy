@@ -35,7 +35,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const { username, password } = req.body as RegistrationRequestBody;
-
+console.log("username, password ", username, password);
+if(!username || !password){
+	 return res.status(200).json({ error: 'No password or no username' });
+}
       const existingUser = users.find((user) => user.username === username);
       if (existingUser) {
         return res.status(400).json({ message: 'Username already exists' });
@@ -53,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       await fs.promises.writeFile(dataFilePath, JSON.stringify(users, null, 2));
 
-      return res.status(200).json({ message: 'Registration successful' });
+      return res.status(200).json({ message: 'Registration successful' , username});
     } catch (error) {
       console.error('Error during registration:', error);
       return res.status(500).json({ message: 'Internal server error' });

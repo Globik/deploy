@@ -14,7 +14,7 @@ interface AdminPanelProps {
   users: User[];
 }
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ users }) => {
+const AdminPanel: /*React.FC<AdminPanelProps>*/any = () => {
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,7 +39,24 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users }) => {
         // Update users with timers
        //  console.log("*** USERS ***", JSON.parse(users))
      //  var users2:any=JSON.parse(users:any);
-        const updatedUsersWithTimers = users.map((user) => {
+     
+     
+     
+     const res = await fetch("/api/getUsers");
+  //console.log(res);
+  if(res.status==200){
+	  const us = await res.json();
+	 // console.log("***US*** ", us);
+	  const users=us.users;
+	 // console.log("*** USERS *** ")
+	 
+    
+     
+     
+     
+     
+     
+        const updatedUsersWithTimers = users.map((user:any) => {
           const updatedUser = { ...user };
 
           if (
@@ -57,6 +74,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ users }) => {
         });
 
         setUsersWithTimers(updatedUsersWithTimers);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }

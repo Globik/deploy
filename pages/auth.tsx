@@ -13,20 +13,30 @@ const AuthPage = () => {
   const handleAuth = async () => {
     try {
       const endpoint = isLogin ? '/api/login' : '/api/registration';
+     // alert(endpoint+' '+username);
+     if(!password || !username){
+		 alert("Заполните все поля.");
+		 return;
+	 }
       const response = await axios.post(endpoint, { username, password });
 
       if (response.status === 200) {
+      if(response.data.error){
+		  setError(isLogin ? 'Ошибка при входе: '+response.data.error : 'Ошибка при регистрации: '+response.data.error);
+	  }else{
         // Set the 'username' cookie with the logged-in or registered username
+       // alert("username: "+response.data.username);
+        
         document.cookie = `username=${username}; path=/;`;
 
         // Redirect to the '/parsing' page after successful login or registration
         router.push('/parsing');
-       
-      } else {
-        setError(response.data.message);
+       }
+      }else {
+        setError(isLogin ? 'Ошибка при входе2'+response.data.message : 'Ошибка при регистрации'+response.data.message);
       }
-    } catch (error) {
-      setError(isLogin ? 'Ошибка при входе' : 'Ошибка при регистрации');
+   } catch (error) {
+      setError(isLogin ? 'Ошибка при входе3'  : 'Ошибка при регистрации3');
       console.error('Error during authentication:', error);
     }
   };

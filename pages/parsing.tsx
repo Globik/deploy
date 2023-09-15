@@ -85,9 +85,10 @@ export const getServerSideProps: GetServerSideProps<ParsingProps> = async (
     const users: User[] = JSON.parse(rawData);
 
     const username = context.req.cookies.username || "";
-
+console.log("username1: ", username);
     const user = users.find((u) => u.username === username);
-
+    
+console.log("user1: ", user);
     if (!user) {
       return {
         redirect: {

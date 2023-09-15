@@ -2,7 +2,7 @@
   {
     "username": "777777",
     "password": "$2b$10$NIOLsBoxWKwL.1myjvAP6eIrZDvd7qOvYESFkBBwJbgukcfLO1LTy",
-    "accessExpiration": "2023-10-06T19:00:00.000Z",
+    "accessExpiration": "2023-09-15T12:15:24.309Z",
     "privilege": true
   },
   {
@@ -46,8 +46,23 @@
     "privilege": false
   },
   {
-    "username": "",
-    "password": "$2b$10$GHpoidtGVW1kE/y8DqYfLunFo7a52nfndTq1d2qcU0/U9JwMQPcyC",
+    "username": "ewa",
+    "password": "$2b$10$8UKWUhRC6klwt.aSSIPLNOlhaFE.xs9QVDEtPFpe7ySuS81R4W8T.",
+    "privilege": false
+  },
+  {
+    "username": "dima2",
+    "password": "$2b$10$01b7LF0RLX3JAvPvN/v58.qgtbnPWkd.v9vFXh.kWrMqge0G5mqyu",
+    "privilege": false
+  },
+  {
+    "username": "1",
+    "password": "$2b$10$nJGtx74XmSFEd41oHMOdAOBQoQoyrNAxMzraZ2a4trfRo68wjHEhu",
+    "privilege": false
+  },
+  {
+    "username": "s77dd",
+    "password": "$2b$10$0VmmHxGk6Ju7kRXANNW.sOSbzRak/b5cNDMBSKO0FMzsBZVYsFUfG",
     "privilege": false
   }
 ]

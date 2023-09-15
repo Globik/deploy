@@ -35,11 +35,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const users: User[] = JSON.parse(rawData);
 
       const { username, password } = req.body as LoginRequestBody;
+      if(!username || !password){
+	 return res.status(200).json({ error: 'No password or no username' });
+}
 
       const user = users.find((user) => user.username === username);
 
       if (!user) {
-        return res.status(401).json({ message: 'Invalid credentials' });
+        return res.status(200).json({ error: 'Invalid credentials' });
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
@@ -57,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         return res.status(200).json({ message: 'Login successful', user });
       } else {
-        return res.status(401).json({ message: 'Invalid credentials' });
+        return res.status(200).json({ error: 'Invalid credentials' });
       }
     } catch (error) {
       console.error('Error during login:', error);
